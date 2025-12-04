@@ -4,25 +4,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>智慧氣象站</title>
+    <title>日常氣象</title>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap"
+        rel="stylesheet">
 
     <style>
         :root {
-            /* Neumorphism Color Palette */
-            --neu-bg: #EFEEEE; /* 米白/淺灰基底 */
-            --neu-text-main: #5A554E; /* 深灰褐文字 */
-            --neu-text-secondary: #9A968F; /* 次要文字 */
-            
-            /* 核心：光影設定 */
-            /* 亮面光（左上） */
-            --neu-shadow-light: #FFFFFF; 
-            /* 暗面影（右下）- 帶一點暖色調 */
-            --neu-shadow-dark: #D1CDC5; 
-            
-            --neu-accent: #6BAED6; /* 柔和的藍色強調色 */
-            --neu-accent-warm: #F7B267; /* 柔和的暖色強調色 */
+            /* === 1. 霧感薰衣草配色 === */
+            --bg-color: #EFEEE9;
+            /* 米白陶土底 */
+
+            /* 指定色票 */
+            --text-main: #615585;
+            /* 深紫灰 (主要文字) */
+            --text-accent: #9B8CC9;
+            /* 粉嫩紫 (強調色/Icon) */
+
+            --text-light: #8b92a0;
+            /* 淺灰 (次要資訊) */
+
+            /* 陰影系統 (保持暖調) */
+            --shadow-light: #FFFFFF;
+            --shadow-dark: #D4D0C5;
+
+            --radius-box: 24px;
+            --radius-btn: 18px;
         }
 
         * {
@@ -30,306 +37,354 @@
             padding: 0;
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
-            /* 防止 iOS 橡皮筋效果 */
-            overscroll-behavior-y: none; 
+            overscroll-behavior-y: none;
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--neu-bg);
-            color: var(--neu-text-main);
+            font-family: 'M PLUS Rounded 1c', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
             min-height: 100vh;
-            /* 增加一點紋理質感 */
-            /* background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E"); */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        /* === Neumorphism Utilities (核心樣式) === */
-        /* 凸起效果 (卡片, 按鈕) */
-        .neu-flat {
-            background: var(--neu-bg);
-            box-shadow: 6px 6px 12px var(--neu-shadow-dark),
-                        -6px -6px 12px var(--neu-shadow-light);
-            border-radius: 20px;
-        }
-        
-        /* 更加凸起的圓形 (儀表盤) */
-        .neu-convex-circle {
-            background: linear-gradient(145deg, #ffffff, #e6e5e2);
-            box-shadow: 8px 8px 16px var(--neu-shadow-dark),
-                        -8px -8px 16px var(--neu-shadow-light);
-            border-radius: 50%;
+        /* === 擬物化工具類 === */
+
+        .clay-box {
+            background: var(--bg-color);
+            border-radius: var(--radius-btn);
+            box-shadow:
+                5px 5px 13px var(--shadow-dark),
+                -2px -3px 10px var(--shadow-light);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
         }
 
-        /* 凹陷效果 (輸入框, 按下狀態) */
-        .neu-inset {
-            background: var(--neu-bg);
-            box-shadow: inset 4px 4px 8px var(--neu-shadow-dark),
-                        inset -4px -4px 8px var(--neu-shadow-light);
-            border-radius: 15px;
+        .clay-box:active {
+            box-shadow:
+                inset 4px 4px 8px var(--shadow-dark),
+                inset -4px -4px 8px var(--shadow-light);
+            transform: scale(0.98);
         }
 
-        /* === Layout Structure === */
-        .container {
-            max-width: 480px; /* 手機介面寬度 */
-            margin: 0 auto;
-            padding: 20px 25px;
+        .clay-inset {
+            background: var(--bg-color);
+            border-radius: 50px;
+            box-shadow:
+                inset 4px 4px 8px var(--shadow-dark),
+                inset -4px -4px 8px var(--shadow-light);
+        }
+
+        /* === 版面配置 === */
+        .app-container {
+            width: 100%;
+            max-width: 420px;
+            padding: 20px 30px;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
 
-        /* Header & Location Selector */
+        /* 2. Header */
         .header {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-start;
             align-items: center;
+            padding-top: 15px;
             margin-bottom: 30px;
-            padding-top: 10px;
-        }
-        
-        .date-display {
-            font-size: 0.9rem;
-            color: var(--neu-text-secondary);
-            font-weight: 500;
         }
 
-        /* 自定義擬物化 Select */
-        .location-select-wrapper {
+        .location-wrapper {
             position: relative;
-            width: 160px;
+            z-index: 10;
+            min-width: 140px;
         }
 
         .location-select {
-            width: 100%;
-            padding: 10px 15px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--neu-text-main);
-            background: var(--neu-bg);
+            appearance: none;
             border: none;
-            appearance: none; /* 移除預設樣式 */
+            background: transparent;
+            font-family: inherit;
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--text-main);
+            padding: 10px 35px 10px 20px;
             cursor: pointer;
-            outline: none;
+            width: 100%;
         }
-        
-        /* 下拉箭頭 Icon */
-        .select-icon {
+
+        .location-icon {
             position: absolute;
             right: 15px;
             top: 50%;
             transform: translateY(-50%);
+            color: var(--text-accent);
             pointer-events: none;
-            color: var(--neu-text-secondary);
-            font-size: 1.2rem;
+            font-weight: bold;
         }
 
-        /* === Main Weather Dashboard === */
-        .main-dashboard {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 40px;
-        }
-
-        /* 大圓形溫度計 */
-        .temp-circle {
-            width: 200px;
-            height: 200px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+        /* 3. Status Grid */
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
             margin-bottom: 25px;
-            position: relative;
-        }
-        
-        /* 用偽元素做一個細緻的外環光暈 */
-        .temp-circle::after {
-            content: '';
-            position: absolute;
-            top: -5px; left: -5px; right: -5px; bottom: -5px;
-            border-radius: 50%;
-            box-shadow: inset 2px 2px 4px rgba(255,255,255,0.5),
-                        inset -2px -2px 4px rgba(0,0,0,0.05);
-            z-index: -1;
         }
 
-        .main-icon i {
-            font-size: 4rem;
-            color: var(--neu-accent);
-            /* 讓 icon 也有微微的立體感 */
-            filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.1));
+        .status-item {
+            aspect-ratio: 1/1;
+            padding: 10px;
+        }
+
+        .status-icon {
+            font-size: 1.8rem;
+            color: var(--text-accent);
+            margin-bottom: 5px;
+        }
+
+        .status-label {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            font-weight: 700;
+        }
+
+        /* 4. Main Pebble (鵝卵石造型) */
+        .dial-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .weather-desc-title {
+            font-size: 1.4rem;
+            color: var(--text-main);
+            font-weight: 800;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* 不規則鵝卵石背景 */
+        .pebble-shape {
+            width: 260px;
+            height: 260px;
+            background: var(--bg-color);
+            /* 關鍵：不規則圓角生成鵝卵石形狀 */
+            border-radius: 30% 75% 42% 69% / 55% 45% 55% 45%;
+            box-shadow:
+                10px 10px 24px var(--shadow-dark),
+                -10px -10px 24px var(--shadow-light);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+
+            /* 讓它有一點微微的呼吸動態感 */
+            animation: float 10s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% {
+                border-radius: 30% 75% 42% 69% / 55% 45% 55% 45%;
+            }
+
+            50% {
+                border-radius: 54% 46% 58% 42% / 35% 45% 35% 55%;
+            }
+
+            100% {
+                border-radius: 30% 75% 42% 69% / 55% 45% 55% 45%;
+            }
+        }
+
+        /* 內部稍微凹陷一點增加層次感，或者直接放內容 */
+        .pebble-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
         .main-temp {
-            font-size: 3.5rem;
+            font-size: 4.5rem;
             font-weight: 700;
+            color: var(--text-main);
             line-height: 1;
-            margin: 5px 0;
-            color: var(--neu-text-main);
+            letter-spacing: -2px;
+            margin-left: 10px;
+            /* 視覺平衡 */
         }
 
-        .weather-desc {
-            font-size: 1.1rem;
-            color: var(--neu-text-secondary);
-            font-weight: 500;
-        }
-        
-        .temp-range {
-             font-size: 0.9rem;
-             color: var(--neu-text-secondary);
-             margin-top: 5px;
-        }
-
-        /* === Detail Grid (儀表盤區) === */
-        .detail-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            width: 100%;
-            margin-bottom: 30px;
-        }
-
-        .detail-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 15px;
-            aspect-ratio: 1 / 1; /* 保持正方形/圓形 */
-        }
-
-        .detail-icon {
-            font-size: 1.8rem;
-            color: var(--neu-accent);
-            margin-bottom: 5px;
-        }
-        
-        /* 不同類型的 Icon 顏色微調 */
-        .icon-rain { color: var(--neu-accent); }
-        .icon-comfort { color: var(--neu-accent-warm); }
-        .icon-wind { color: var(--neu-text-secondary); }
-
-        .detail-value {
-            font-size: 1.1rem;
+        .main-unit {
+            font-size: 1.2rem;
+            color: var(--text-accent);
             font-weight: 700;
+            margin-top: -5px;
         }
 
-        .detail-label {
-            font-size: 0.8rem;
-            color: var(--neu-text-secondary);
+        .bottom-status {
+            margin-top: 25px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-accent);
+            font-weight: 700;
+            font-size: 1.1rem;
+            background: rgba(255, 255, 255, 0.3);
+            /* 微微的底 */
+            padding: 8px 16px;
+            border-radius: 20px;
         }
 
-        /* === Forecast Section (稍後預報) === */
-        .forecast-section {
-            margin-top: auto; /* 推到底部 */
-        }
-        
-        .section-title {
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 15px;
-            padding-left: 5px;
+        /* 5. Forecast List */
+        .forecast-container {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            width: 100%;
         }
 
-        .scroll-container {
+        .scroll-wrapper {
             display: flex;
             overflow-x: auto;
             gap: 15px;
-            padding: 10px 5px 20px 5px; /* 預留陰影空間 */
+            padding: 15px 5px 25px 5px;
+            /* 增加底部 padding 給陰影 */
             scrollbar-width: none;
         }
-        .scroll-container::-webkit-scrollbar { display: none; }
+
+        .scroll-wrapper::-webkit-scrollbar {
+            display: none;
+        }
 
         .forecast-card {
-            min-width: 100px;
+            min-width: 130px;
             padding: 15px 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             flex-shrink: 0;
+            border-radius: 20px;
         }
 
-        .forecast-time {
+        .fc-time {
             font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 8px;
+            color: var(--text-main);
+            font-weight: 700;
+            margin-bottom: 5px;
         }
 
-        .forecast-icon {
-            font-size: 2rem;
-            color: var(--neu-accent);
-            margin: 8px 0;
+        .fc-temp {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-top: 5px;
         }
 
-        .forecast-temp {
-            font-size: 0.9rem;
+        .fc-rain {
+            font-size: 0.75rem;
+            color: var(--text-accent);
+            margin-top: 5px;
             font-weight: 600;
-        }
-        
-        /* Loading & Error States */
-        .state-container {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: var(--neu-bg);
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        /* Loading */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-color);
+            z-index: 999;
+            display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 100;
-            color: var(--neu-text-secondary);
+            flex-direction: column;
+            transition: opacity 0.5s;
         }
-        
-        .loading-icon {
-            font-size: 3rem;
-            animation: spin 2s linear infinite;
-            color: var(--neu-accent);
-        }
-        
-        @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* Pull to refresh 提示的樣式覆蓋 */
-        .ptr--pull-down {
-            color: var(--neu-text-secondary);
-            font-weight: 500;
+        @keyframes loadingIcon {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <div id="loadingState" class="state-container">
-        <i class="ph ph-spinner-gap loading-icon"></i>
-        <p style="margin-top: 15px; font-weight: 500;">正在同步氣候資料...</p>
-    </div>
-    
-    <div id="errorState" class="state-container" style="display: none;">
-        <i class="ph ph-cloud-slash" style="font-size: 4rem; color: var(--neu-text-secondary);"></i>
-        <p id="errorMessage" style="margin-top: 15px; font-weight: 500;">連線失敗</p>
-        <button onclick="initWeatherApp()" class="neu-flat" style="margin-top: 20px; padding: 10px 25px; border: none; font-family: inherit; font-weight: 600; color: var(--neu-accent); cursor: pointer;">重新嘗試</button>
+    <div id="loadingOverlay" class="loading-overlay">
+        <i class="ph ph-rainbow-cloud"
+            style="font-size: 3rem; color: var(--text-accent); animation: loadingIcon 2s ease-in-out infinite;"></i>
+        <p style="margin-top: 15px; font-weight: 700; color: var(--text-main);">正在觀測雲的流動...</p>
     </div>
 
-    <div id="mainContent" class="container" style="visibility: hidden;"> <header class="header">
-            <div id="dateDisplay" class="date-display">Loading date...</div>
-            
-            <div class="location-select-wrapper neu-inset">
+    <div class="app-container">
+
+        <header class="header">
+            <div class="location-wrapper clay-inset">
                 <select id="locationSelect" class="location-select">
-                    </select>
-                <i class="ph ph-caret-down select-icon"></i>
+                </select>
+                <i class="ph ph-caret-down location-icon"></i>
             </div>
         </header>
 
-        <section class="main-dashboard" id="currentWeather">
-            </section>
+        <section class="status-grid">
+            <div class="status-item clay-box">
+                <i class="ph ph-drop status-icon"></i>
+                <span class="status-label" id="rainVal">--%</span>
+            </div>
+            <div class="status-item clay-box">
+                <i class="ph ph-person-simple-walk status-icon"></i>
+                <span class="status-label" id="comfortVal">--</span>
+            </div>
+            <div class="status-item clay-box">
+                <i class="ph ph-calendar-heart status-icon"></i>
+                <span class="status-label" id="dateVal">--/--</span>
+            </div>
+        </section>
 
-        <section class="detail-grid" id="currentDetails">
-             </section>
+        <section class="dial-container">
+            <div class="weather-desc-title">
+                <i id="mainIcon" class="ph ph-sun" style="color: var(--text-accent); font-size: 1.8rem;"></i>
+                <span id="weatherDesc">載入中</span>
+            </div>
 
-        <section class="forecast-section">
-            <h3 class="section-title">稍後預報</h3>
-            <div class="scroll-container" id="forecastContainer">
-                 </div>
+            <div class="pebble-shape">
+                <div class="pebble-content">
+                    <span id="mainTemp" class="main-temp">--</span>
+                    <!-- <span class="main-unit">攝氏溫度</span> -->
+                </div>
+            </div>
+
+            <div class="bottom-status">
+                <i class="ph ph-thermometer-simple"></i>
+                <span id="tempRange">--° ~ --°</span>
+            </div>
+        </section>
+
+        <section class="forecast-container">
+            <h4
+                style="font-size: 1.1rem; color: var(--text-light); margin-bottom: 15px; margin-left: 5px; font-weight: 700;">
+                稍後預報</h4>
+            <div class="scroll-wrapper" id="forecastList">
+            </div>
         </section>
 
     </div>
@@ -337,19 +392,18 @@
     <script src="https://cdn.jsdelivr.net/npm/pulltorefreshjs@0.1.22/dist/index.umd.min.js"></script>
 
     <script>
-        // ================= CONFIGURATION =================
-        // TODO: 請將此處替換為您後端的真實網址 (不包含結尾斜線)
-        const API_BASE_URL = "https://hex-weather-vibecoding.zeabur.app"; // 例如: https://weather-api.zeabur.app
+        // ================= CONFIG =================
+        // TODO: 填入 Zeabur 後端網址
+        const API_BASE_URL = "https://hex-weather-vibecoding.zeabur.app";
         const API_ENDPOINT = `${API_BASE_URL}/api/weather`;
 
-        // 台灣 22 縣市列表
         const TAIWAN_LOCATIONS = [
             "基隆市", "臺北市", "新北市", "桃園市", "新竹市", "新竹縣", "苗栗縣", "臺中市",
             "彰化縣", "南投縣", "雲林縣", "嘉義市", "嘉義縣", "臺南市", "高雄市", "屏東縣",
             "宜蘭縣", "花蓮縣", "臺東縣", "澎湖縣", "金門縣", "連江縣"
         ];
 
-        // 簡易縣市中心座標 (用於自動定位計算最近縣市)
+        // 簡易座標 (用於自動定位)
         const LOCATION_COORDS = {
             "基隆市": { lat: 25.1316, lng: 121.7447 }, "臺北市": { lat: 25.0375, lng: 121.5637 },
             "新北市": { lat: 25.0124, lng: 121.4657 }, "桃園市": { lat: 24.9889, lng: 121.3135 },
@@ -364,264 +418,161 @@
             "金門縣": { lat: 24.4493, lng: 118.3766 }, "連江縣": { lat: 26.1505, lng: 119.9265 }
         };
 
-        // 預設地點
-        let currentLocation = "臺北市"; 
+        let currentLocation = "臺北市";
 
         // ================= HELPER FUNCTIONS =================
 
-        // 1. 初始化下拉選單
-        function populateDropdown() {
-            const select = document.getElementById('locationSelect');
-            TAIWAN_LOCATIONS.forEach(loc => {
-                const option = document.createElement('option');
-                option.value = loc;
-                option.textContent = loc;
-                select.appendChild(option);
-            });
-            select.value = currentLocation; // 設定初始值
-
-            // 綁定切換事件
-            select.addEventListener('change', (e) => {
-                currentLocation = e.target.value;
-                fetchWeather(currentLocation);
-            });
+        function getIcon(wx) {
+            if (!wx) return "ph-question";
+            if (wx.includes("雷")) return "ph-cloud-lightning";
+            if (wx.includes("雨")) return "ph-cloud-rain";
+            if (wx.includes("陰")) return "ph-cloud";
+            if (wx.includes("多雲") && wx.includes("晴")) return "ph-cloud-sun";
+            if (wx.includes("多雲")) return "ph-cloud";
+            if (wx.includes("晴")) return "ph-sun";
+            return "ph-sun-dim";
         }
 
-        // 2. 更新日期顯示
-        function updateDateDisplay() {
-            const now = new Date();
-            const month = now.getMonth() + 1;
-            const date = now.getDate();
-            const dayIndex = now.getDay();
-            const days = ["週日", "週一", "週二", "週三", "週四", "週五", "週六"];
-            document.getElementById('dateDisplay').textContent = `${month}月${date}日 ${days[dayIndex]}`;
-        }
-
-        // 3. 天氣狀況對應 Phosphor Icon Class (需要根據 CWA 的 Wx 描述調整)
-        function getWeatherIconClass(weatherText) {
-            if (!weatherText) return "ph-question";
-            // 簡化判斷邏輯，越上面的越優先匹配
-            if (weatherText.includes("雷")) return "ph-cloud-lightning";
-            if (weatherText.includes("雨")) return "ph-cloud-rain";
-            if (weatherText.includes("陰")) return "ph-cloud";
-            if (weatherText.includes("多雲") && weatherText.includes("晴")) return "ph-cloud-sun";
-            if (weatherText.includes("多雲")) return "ph-cloud";
-            if (weatherText.includes("晴")) return "ph-sun";
-            return "ph-cloud-sun"; // 預設
-        }
-
-        // 4. 格式化時間區段顯示 (例如: 晚上、明天早晨)
-        function formatTimePeriod(startTime) {
-            const date = new Date(startTime);
-            const today = new Date();
-            const hour = date.getHours();
-            
-            let period = "";
-            if (hour >= 5 && hour < 11) period = "早晨";
-            else if (hour >= 11 && hour < 14) period = "中午";
-            else if (hour >= 14 && hour < 18) period = "下午";
-            else if (hour >= 18 && hour < 23) period = "晚上";
-            else period = "深夜";
-
-            // 簡單判斷是否為明天 (跨日)
-            if (date.getDate() !== today.getDate()) {
-                return "明天" + period;
-            }
-            return period;
-        }
-
-        // 5. 計算兩點經緯度距離 (Haversine formula) - 用於尋找最近縣市
         function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
-            const R = 6371; // 地球半徑 km
+            const R = 6371;
             const dLat = deg2rad(lat2 - lat1);
             const dLon = deg2rad(lon2 - lon1);
-            const a =
-                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
-                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
             return R * c;
         }
         function deg2rad(deg) { return deg * (Math.PI / 180); }
 
-        // 6. 自動定位功能
         async function performGeolocation() {
-            return new Promise((resolve, reject) => {
-                if (!navigator.geolocation) {
-                    resolve(null); // 瀏覽器不支援，回傳 null 使用預設值
-                    return;
-                }
-                
+            return new Promise((resolve) => {
+                if (!navigator.geolocation) { resolve(null); return; }
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
                         const userLat = position.coords.latitude;
                         const userLng = position.coords.longitude;
-                        
-                        // 尋找距離最近的縣市中心
                         let minDistance = Infinity;
                         let nearestLocation = null;
-
                         for (const [loc, coords] of Object.entries(LOCATION_COORDS)) {
                             const distance = getDistanceFromLatLonInKm(userLat, userLng, coords.lat, coords.lng);
-                            if (distance < minDistance) {
-                                minDistance = distance;
-                                nearestLocation = loc;
-                            }
+                            if (distance < minDistance) { minDistance = distance; nearestLocation = loc; }
                         }
-                        console.log(`自動定位結果: ${nearestLocation} (距離約 ${minDistance.toFixed(1)}km)`);
                         resolve(nearestLocation);
                     },
-                    (error) => {
-                        console.warn("無法取得位置權限或定位失敗:", error.message);
-                        resolve(null); // 定位失敗，回傳 null 使用預設值
-                    },
-                    { timeout: 5000, maximumAge: 600000 } // 設定超時和緩存
+                    (err) => { console.warn(err); resolve(null); },
+                    { timeout: 4000 }
                 );
             });
         }
 
+        // ================= UI FUNCTIONS =================
 
-        // ================= CORE LOGIC =================
-
-        // 渲染畫面
         function renderUI(data) {
-            const forecasts = data.forecasts;
-            const current = forecasts[0]; // 目前時段
-            const others = forecasts.slice(1); // 未來時段
+            const current = data.forecasts[0];
+            const avgTemp = Math.round((parseInt(current.minTemp) + parseInt(current.maxTemp)) / 2);
 
-            // 1. 計算平均溫度
-            const avgTemp = Math.round((parseInt(current.maxTemp) + parseInt(current.minTemp)) / 2);
-            
-            // 2. 渲染主儀表盤 (Current Weather)
-            const mainIconClass = getWeatherIconClass(current.weather);
-            document.getElementById('currentWeather').innerHTML = `
-                <div class="temp-circle neu-convex-circle">
-                    <div class="main-icon"><i class="ph ${mainIconClass}"></i></div>
-                    <div class="main-temp">${avgTemp}°</div>
-                    <div class="weather-desc">${current.weather}</div>
-                </div>
-                <div class="temp-range">
-                    今日氣溫 ${current.minTemp}° - ${current.maxTemp}°
-                </div>
-            `;
+            // 1. Grid Info
+            document.getElementById('rainVal').textContent = current.rain ? `${current.rain}%` : '0%';
+            document.getElementById('comfortVal').textContent = current.comfort || '舒適';
 
-            // 3. 渲染詳細資訊 (Detail Grid) - 處理可能缺失的資料
-            // 注意: CWA F-C0032-001 API 可能不包含風速(WS)，若無則顯示 N/A
-            const windSpeedDisplay = current.windSpeed ? `${current.windSpeed} m/s` : "N/A";
-            const rainProb = current.rain ? `${current.rain}%` : "0%";
+            // 2. Main Pebble (鵝卵石)
+            document.getElementById('mainTemp').textContent = avgTemp + '°';
+            document.getElementById('weatherDesc').textContent = current.weather;
+            document.getElementById('mainIcon').className = `ph ${getIcon(current.weather)}`;
+            document.getElementById('tempRange').textContent = `${current.minTemp}° ~ ${current.maxTemp}°`;
 
-            document.getElementById('currentDetails').innerHTML = `
-                <div class="detail-item neu-flat">
-                    <i class="ph ph-drop detail-icon icon-rain"></i>
-                    <div class="detail-value">${rainProb}</div>
-                    <div class="detail-label">降雨機率</div>
-                </div>
-                <div class="detail-item neu-flat">
-                    <i class="ph ph-wind detail-icon icon-wind"></i>
-                    <div class="detail-value">${windSpeedDisplay}</div>
-                    <div class="detail-label">風速</div>
-                </div>
-                <div class="detail-item neu-flat">
-                    <i class="ph ph-t-shirt detail-icon icon-comfort"></i>
-                    <div class="detail-value" style="font-size: 0.9rem;">${current.comfort || '舒適'}</div>
-                    <div class="detail-label">舒適度</div>
-                </div>
-            `;
+            // 3. Forecast List
+            const list = document.getElementById('forecastList');
+            list.innerHTML = '';
 
-            // 4. 渲染稍後預報 (Forecast Scroll)
-            const forecastContainer = document.getElementById('forecastContainer');
-            forecastContainer.innerHTML = ''; // 清空
-            others.forEach(f => {
-                const timeLabel = formatTimePeriod(f.startTime);
-                const iconClass = getWeatherIconClass(f.weather);
-                const rainText = f.rain ? `💧${f.rain}%` : '';
+            data.forecasts.slice(1).forEach(f => {
+                const date = new Date(f.startTime);
+                const hour = date.getHours();
+                const today = new Date().getDate();
 
-                forecastContainer.innerHTML += `
-                    <div class="forecast-card neu-flat">
-                        <div class="forecast-time">${timeLabel}</div>
-                        <i class="ph ${iconClass} forecast-icon"></i>
-                        <div class="forecast-temp">${f.minTemp}°-${f.maxTemp}°</div>
-                        <div style="font-size:0.75rem; color:var(--neu-text-secondary); margin-top:4px;">${rainText}</div>
+                let timeStr = "";
+                if (date.getDate() !== today) timeStr += "明天";
+
+                if (hour >= 5 && hour < 11) timeStr += "早晨";
+                else if (hour >= 11 && hour < 14) timeStr += "中午";
+                else if (hour >= 14 && hour < 18) timeStr += "下午";
+                else if (hour >= 18 && hour < 23) timeStr += "晚上";
+                else timeStr += "深夜";
+
+                const popText = f.rain ? `${f.rain}%` : '0%';
+
+                list.innerHTML += `
+                    <div class="clay-box forecast-card">
+                        <div class="fc-time">${timeStr}</div>
+                        <i class="ph ${getIcon(f.weather)}" style="font-size: 1.8rem; color: var(--text-accent); margin: 6px 0;"></i>
+                        <div class="fc-temp">${f.minTemp}° - ${f.maxTemp}°</div>
+                        <div class="fc-rain"><i class="ph-fill ph-drop"></i> ${popText}</div>
                     </div>
                 `;
             });
         }
 
-        // 抓取 API 資料
-        async function fetchWeather(location) {
-            // 顯示 Loading State
-            document.getElementById('loadingState').style.display = 'flex';
-            document.getElementById('mainContent').style.visibility = 'hidden';
-            document.getElementById('errorState').style.display = 'none';
+        async function fetchWeather(loc) {
+            const overlay = document.getElementById('loadingOverlay');
+            overlay.style.opacity = '1';
+            overlay.style.display = 'flex';
 
             try {
-                const targetUrl = `${API_ENDPOINT}?location=${encodeURIComponent(location)}`;
-                console.log("Fetching:", targetUrl);
-
-                // 人為加入一點延遲，讓 Loading 動畫展示一下，體驗比較好
-                const delay = new Promise(resolve => setTimeout(resolve, 800));
-                const fetchPromise = fetch(targetUrl).then(async res => {
-                    const json = await res.json();
-                    if (!res.ok) throw new Error(json.message || "API Error");
-                    return json;
-                });
-
-                const [_, json] = await Promise.all([delay, fetchPromise]);
+                const res = await fetch(`${API_ENDPOINT}?location=${loc}`);
+                const json = await res.json();
+                await new Promise(r => setTimeout(r, 600)); // 體驗優化：稍微停留
 
                 if (json.success) {
                     renderUI(json.data);
-                    // 成功後顯示主畫面
-                    document.getElementById('loadingState').style.display = 'none';
-                    document.getElementById('mainContent').style.visibility = 'visible';
                 } else {
-                    throw new Error(json.message || "Unknown Error");
+                    alert("資料讀取錯誤: " + json.message);
                 }
-
             } catch (e) {
                 console.error(e);
-                // 顯示錯誤畫面
-                document.getElementById('loadingState').style.display = 'none';
-                document.getElementById('mainContent').style.visibility = 'hidden';
-                document.getElementById('errorState').style.display = 'flex';
-                document.getElementById('errorMessage').textContent = e.message || "無法取得資料";
+            } finally {
+                overlay.style.opacity = '0';
+                setTimeout(() => { overlay.style.display = 'none'; }, 500);
             }
         }
 
-        // 應用程式初始化
-        async function initWeatherApp() {
-            updateDateDisplay();
-            populateDropdown();
+        async function initApp() {
+            // 1. 下拉選單
+            const select = document.getElementById('locationSelect');
+            TAIWAN_LOCATIONS.forEach(loc => {
+                const opt = document.createElement('option');
+                opt.value = loc;
+                opt.textContent = loc;
+                select.appendChild(opt);
+            });
 
-            // 嘗試自動定位
+            select.addEventListener('change', (e) => {
+                currentLocation = e.target.value;
+                fetchWeather(currentLocation);
+            });
+
+            // 2. 日期
+            const now = new Date();
+            const days = ['週日', '週一', '週二', '週三', '週四', '週五', '週六'];
+            document.getElementById('dateVal').textContent = `${now.getMonth() + 1}/${now.getDate()} ${days[now.getDay()]}`;
+
+            // 3. 定位
+            select.value = currentLocation; // 預設
             const locatedCity = await performGeolocation();
             if (locatedCity) {
                 currentLocation = locatedCity;
-                // 更新下拉選單的顯示
-                document.getElementById('locationSelect').value = currentLocation;
+                select.value = currentLocation;
             }
 
-            // 開始抓取資料
             fetchWeather(currentLocation);
         }
 
-        // ================= SETUP =================
-        document.addEventListener("DOMContentLoaded", () => {
-            initWeatherApp();
-
-            // 初始化 Pull-to-Refresh
-            PullToRefresh.init({
-                mainElement: 'body',
-                triggerElement: 'body',
-                instructionsPullToRefresh: '下拉刷新氣象',
-                instructionsReleaseToRefresh: '釋放開始更新',
-                instructionsRefreshing: '更新中...',
-                onRefresh: function() {
-                    // 重新抓取當前選定地點的資料
-                    return fetchWeather(currentLocation); 
-                }
-            });
+        // Pull to refresh
+        PullToRefresh.init({
+            mainElement: 'body',
+            onRefresh: function () { return fetchWeather(currentLocation); }
         });
 
+        document.addEventListener("DOMContentLoaded", initApp);
     </script>
 </body>
+
 </html>
